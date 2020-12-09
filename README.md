@@ -51,3 +51,53 @@ Once we have a machine image, orchestration tools are used to deploy these into 
     - Then it will automatically 1) Install/configure 2) Test that it did do the action
     - If the test fails it will break
 
+## Instructions
+### Ansible controller
+- Set up as an EC2 instance. The security group needs to be unique to the controller and set so we can ssh in from our ip.
+- can install ansible and associated dependancies in EC2 using [ansible_bash.sh](https://github.com/samturton2/IAC-Ansible/blob/main/ansible_bash.sh)
+- copy your aws ssh key into your ansible controller using scp
+
+### Ansible Host
+- To make an ansible host in an ec2 instance we need to create a security group for hosts that allows an ssh in from any instance with the ansible controller security group.
+
+### Connecting to hosts
+- ssh into the ansible controller instance
+- cd to and edit the hosts file `/etc/ansible/` so we can specify to connect to a host in it, using the private ip
+```
+[host_a]
+172.31.44.236 ansible_connection=ssh ansible_ssh_private_key_file=/home/ubuntu/.ssh/eng74samawskey.pem
+```
+
+- To check the connection is made run the following command
+```bash
+ansible host_a -m ping
+```
+- You can ping all hosts using
+```bash
+ansible all -m ping
+```
+- If successful you should see the following success message
+![](img/Pong.png)
+
+### ad-hoc commands
+- Ansible ad-hoc commands can be used in our ansible controller to communicated with our hosts
+![](img/adhocsyntax.png)
+- get the uptime with
+```bash
+ansible all -a uptime --become
+```
+- update and upgrade environments
+```bash
+ansible host_a -m apt -a "upgrade=yes update_cache=yes" --become
+```
+
+## Our first playbook
+- This playbook is going to connect our host a to an SQL DB.
+- `mkdir playbooks` in the ~/ of the ansible controller
+- create a file and look at [sql db connection playbook]() to see what to include. It would explain the commands in the # comments
+- Once created we can run the command below to execute the playbook
+```bash
+ansible-playbook sql_connection.yaml
+```
+- If correctly executed teh terminal should show
+![](img/sqlplaybookran.png)

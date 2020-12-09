@@ -1,0 +1,21 @@
+# This is going to be our example playbook which is written in yaml
+#
+# Your YAML playbook file starts after three dashes
+
+---
+
+- name: a play to install sql
+  hosts: host_a
+  # This is targeting host_a and is used to define where this playbook will run
+  gather_facts: yes
+  # Gathers facts/state of machine before running playbook
+  become: true
+  # Become is used as the root permission to perform tasks that may require admin access
+
+  tasks:
+  - name: Sam trying to install SQL DB
+    apt: pkg=mysql-server state=present
+
+# Be mindful of indentation
+# Each task should be specific
+# One playbook can have many tasks
