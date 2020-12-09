@@ -94,7 +94,7 @@ ansible host_a -m apt -a "upgrade=yes update_cache=yes" --become
 ## Our first playbook
 - This playbook is going to connect our host a to an SQL DB.
 - `mkdir playbooks` in the ~/ of the ansible controller
-- create a file and look at [sql db connection playbook]() to see what to include. It would explain the commands in the # comments
+- create a file and look at [sql db connection playbook](https://github.com/samturton2/IAC-Ansible/blob/main/sql_connection.yaml) to see what to include. It would explain the commands in the # comments
 - Once created we can run the command below to execute the playbook
 ```bash
 ansible-playbook sql_connection.yaml
