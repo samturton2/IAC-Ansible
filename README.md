@@ -1,5 +1,7 @@
 # Infrastructure As Code - Ansible Configuration Management
 
+![](img/ansible.png)
+
 Writing Infrastructure as code / declaring infrastructure and executing the code to create it. It can create Machines, Environments, or architecture.
 Two catagories of tools : Configuration management & Orchestration.
 
