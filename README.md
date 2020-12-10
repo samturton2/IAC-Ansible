@@ -101,3 +101,19 @@ ansible-playbook sql_connection.yaml
 ```
 - If correctly executed teh terminal should show
 ![](img/sqlplaybookran.png)
+
+## App playbook
+- We can provision our environment and launch our app in the host from our ansible controller.
+- Create the playbook as shown in the [app provisioning playbook](). The Plays are to:
+  - Sync the app file into the machine
+  - Install the needed packages and start the app
+  - Set up the reverse proxy configuration.
+- run the playbook with the command
+```bash
+ansible-playbook app_playbook.yaml
+```
+- If ran correctly the terminal should show a success message something like this.
+
+![](img/app_playbook.png)
+- The app should also be running on port 80
+![](img/runningapp.png)
