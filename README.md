@@ -53,7 +53,7 @@ Once we have a machine image, orchestration tools are used to deploy these into 
     - Then it will automatically 1) Install/configure 2) Test that it did do the action
     - If the test fails it will break
 
-## Instructions
+# Instructions
 ### Ansible controller
 - Set up as an EC2 instance. The security group needs to be unique to the controller and set so we can ssh in from our ip.
 - can install ansible and associated dependancies in EC2 using [ansible_bash.sh](https://github.com/samturton2/IAC-Ansible/blob/main/ansible_bash.sh)
