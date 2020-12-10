@@ -104,7 +104,7 @@ ansible-playbook sql_connection.yaml
 
 ## App playbook
 - We can provision our environment and launch our app in the host from our ansible controller.
-- Create the playbook as shown in the [app provisioning playbook](). The Plays are to:
+- Create the playbook as shown in the [app provisioning playbook](https://github.com/samturton2/IAC-Ansible/blob/main/app_playbook.yaml). The Plays are to:
   - Sync the app file into the machine
   - Install the needed packages and start the app
   - Set up the reverse proxy configuration.
