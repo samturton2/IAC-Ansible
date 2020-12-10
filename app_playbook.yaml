@@ -1,0 +1,91 @@
+# This playbook is going to provision host a so it can launch the app
+
+---
+- name: a play to sync over all the app files
+  hosts: host_a
+  become: true
+  tasks:
+  - name: we sync the app/ folder to the host machine
+    synchronize:
+      src: /home/ubuntu/app
+      dest: /home/ubuntu/
+
+- name: a play to install packages needed
+  hosts: host_a
+  # This is targeting host_a and is used to define where this play will run
+  become: true
+  # Become is used as the root permission to perform tasks that may require admin access
+  tasks:
+  # This block updates and upgrades all the packages
+  - name: update and upgrade packages
+    apt: upgrade=yes update_cache=yes
+
+  # This block installs whatever is in the list
+  - name: install git and nginx
+    apt:
+      name:
+        - nginx
+        - git
+      update_cache: yes
+      state: present
+
+  # This block installs nodejs
+  - name: add nodejs apt key
+    apt_key:
+      url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+      state: present
+  - name: install nodejs
+    apt:
+      name: nodejs
+      state: present
+
+  # This block makes sure npm installs all and then pm2 installs
+  - name: install npm
+    apt:
+      name: npm
+      state: present
+
+  - name: install pm2
+    npm:
+      name: pm2
+      global: yes
+      production: yes
+
+  # This block will start the app with pm2
+  - name: npm install
+    become: true
+    shell: sudo npm install
+    args:
+      chdir: /home/ubuntu/app
+  - name: Start app.js, if not running
+    become: true
+    become_user: ubuntu
+    shell: pm2 start app.js
+    args:
+      chdir: /home/ubuntu/app
+
+- name: a play to set up the reverse proxy
+  hosts: host_a
+  become: true
+  tasks:
+  # This block will copy the reverse proxy over and unlink the default
+  - name: copy proxy to conf.d folder
+    copy:
+      src: /home/ubuntu/app/reverse-proxy.conf
+      dest: /etc/nginx/sites-available/reverse-proxy.conf
+      remote_src: yes
+
+  # This block will remove the default proxy, link the new one and restart nginx
+  - name: remove default proxy
+    file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+  - name: symbolically link the new reverse-proxy
+    file:
+      src: /etc/nginx/sites-available/reverse-proxy.conf
+      dest: /etc/nginx/sites-enabled/default
+      state: link
+  - name: restart nginx
+    service:
+      name: nginx
+      state: restarted
