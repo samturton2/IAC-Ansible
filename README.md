@@ -120,5 +120,43 @@ ansible-playbook app_playbook.yaml
 - The app should also be running on port 80
 ![](img/runningapp.png)
 ## Db playbook
+- we need to edit the [app playbook](https://github.com/samturton2/IAC-Ansible/blob/main/app_playbook.yaml) to add in the private ip for the db host.
 - we need to set up an EC2 instance for the b instance, allowing access in the host security group for any instance with the host SG through port 27017.
-- we can link the 
+- we can provision the db host by setting up a [new playbook for the host b](https://github.com/samturton2/IAC-Ansible/blob/main/db_playbook.yaml) in the ansible controller.
+- Once more, cd to and edit the hosts file `/etc/ansible/` so we can specify to connect to host_b, using the private ip, in the same way we did for host_a.
+- If provisioned corrected, the app posts page should be running on port 80.
+
+![](img/posts.png)
+
+## Extra details
+- when provisioning an environment with ansible, its best practice to make use of variables and handlers
+
+### Variables
+- variables can be declared in a seperate file or by there selves. In this example, only the DB_HOST was declared as a variable. The syntax is as follows.
+```yaml
+  vars:
+    DB_HOST: 172.31.46.228
+```
+- This variable was called later using the following syntax
+```yaml
+    shell: |
+        export DB_HOST={{ DB_HOST }}
+```
+
+### Handlers
+- Handlers are functions defined at the end of the script, that are called after a play. They are only ran if the play is played again which avoids unecessary actions when provisioning the environment.
+- Another advantage is they act as a function that can be called multiple times if needed. Preventing the need for repitition of code.
+- In this example I used a handler to fix an nginx bug I found, but i only wanted to fix this bug once at the start when i downloaded it once.
+- I also used it to restart nginx. This was done with the following syntax.
+```yaml
+
+  handlers:
+    - name: restart_nginx
+      service:
+        name: nginx
+        state: restarted
+```
+- This was placed after the tasks section of the playbook. It was called at the end of the play to link the reverse proxy file, using the syntax
+```yaml
+    notify: restart_nginx
+```
