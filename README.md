@@ -55,7 +55,7 @@ Once we have a machine image, orchestration tools are used to deploy these into 
 
 # Instructions
 ### Ansible controller
-- Set up as an EC2 instance. The security group needs to be unique to the controller and set so we can ssh in from our ip.
+- Set up as an EC2 instance. The ssamcurity group needs to be unique to the controller and set so we can ssh in from our ip.
 - can install ansible and associated dependancies in EC2 using [ansible_bash.sh](https://github.com/samturton2/IAC-Ansible/blob/main/ansible_bash.sh)
 - copy your aws ssh key into your ansible controller using scp
 
@@ -119,3 +119,6 @@ ansible-playbook app_playbook.yaml
 ![](img/app_playbook.png)
 - The app should also be running on port 80
 ![](img/runningapp.png)
+## Db playbook
+- we need to set up an EC2 instance for the b instance, allowing access in the host security group for any instance with the host SG through port 27017.
+- we can link the 

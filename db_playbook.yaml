@@ -1,0 +1,45 @@
+# This is a playbook for provisioning the mongodb
+
+---
+- name: A play to install packages needed
+  hosts: host_b
+  # This is targeting host_b which is written in /etc/ansible/hosts
+  become: true
+  # Become is used as the root permission to perform tasks that may require admin access
+  tasks:
+
+  # This block updates packages
+  - name: update packages
+    apt: update_cache=yes
+
+  # This block downloads ngingx
+  - name: install nginx 
+    apt: name=nginx state=present update_cache=yes
+
+  # This block installs mongodb
+  - name: add mongodb 3.2 apt key
+    apt_key:
+      url: https://www.mongodb.org/static/pgp/server-3.2.asc
+      state: present
+  - name: add apt-repo for mongodb
+    apt_repository:
+      repo: "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse"
+      state: present
+  - name: install mongodb
+    apt:
+      pkg: mongodb-org=3.2.20
+      state: present
+
+  # This block gets mongod to listen on all ports
+  - name: change bing ip to 0.0.0.0
+    shell: sudo sed -i 's/127.0.0.1/0.0.0.0/' /etc/mongod.conf
+    notify:
+      - restart db
+
+  # create handler so action can happen only when necessary
+  handlers:
+    - name: restart db
+      service:
+        name: mongod
+        state: started
+        enabled: true

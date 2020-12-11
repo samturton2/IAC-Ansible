@@ -14,6 +14,8 @@
   hosts: host_a
   # This is targeting host_a and is used to define where this play will run
   become: true
+  vars:
+    DB_HOST: 172.31.46.228
   # Become is used as the root permission to perform tasks that may require admin access
   tasks:
   # This block updates and upgrades all the packages
@@ -51,17 +53,25 @@
       global: yes
       production: yes
 
-  # This block will start the app with pm2
-  - name: npm install
+  # This block will set the DB_HOST
+  - name: set db host as global variable
     become: true
-    shell: sudo npm install
+    shell: |
+        export DB_HOST={{ DB_HOST }}
+#        sed -i '/export DB_HOST=\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/d' .bashrc
+        printf '\nexport DB_HOST={{ DB_HOST }}' >> .bashrc
     args:
-      chdir: /home/ubuntu/app
-  - name: Start app.js, if not running
+      chdir: /home/ubuntu
+
+  # This block will start the app with pm2
+  - name: start app.js
     become: true
     become_user: ubuntu
-    shell: pm2 start app.js
-    args:
+    shell: 
+      cmd: |
+        pm2 delete all
+        sudo npm install
+        pm2 start app.js -f
       chdir: /home/ubuntu/app
 
 - name: a play to set up the reverse proxy
