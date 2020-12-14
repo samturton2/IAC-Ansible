@@ -7,8 +7,8 @@ sudo apt install ansible --yes
 
 # install pip3 and python3 as ansible comes with python 2
 sudo apt install python3.8 --yes
-sudo apt install python3-pip -y
-sudo pip3 install --upgrade pip -y
+sudo apt install python3-pip
+sudo pip3 install --upgrade pip
 
 # Installing aws deps
 pip3 install awscli # aws command line interface ----> allows us to

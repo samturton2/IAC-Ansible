@@ -160,3 +160,32 @@ ansible-playbook app_playbook.yaml
 ```yaml
     notify: restart_nginx
 ```
+
+## API keys and authentication security
+
+- secrets
+- environment variables
+- services like ansible
+
+#### What to consider:
+- Is it protected from going online? (.gitgnore)
+- Is it segregated from my code that goes online (environment variables)
+- Is it encrypted (services like ansible vault)
+- Is it shared with colleagues (hashicorp vault)
+
+### Ansible vault
+- Can take files that are in an area of risk e.g. secret keys, user id's, IP's
+etc. and encrypts them
+- These vaults should be offline for obvious reasons
+- To create an ansible vault
+```yaml
+ansible-vault create file_name.yaml
+```
+- Once you assign a password for it, it will open the file in vim
+- Remember you have to press `i` to insert text into the file and then once you
+are done, press escape followed by `:wq` and press enter to save it
+- You can cat this file to see that the output is encrypted
+- To edit the file we run
+```yaml
+ansible-vault edit file_name.yaml
+```
